@@ -55,7 +55,7 @@ public class BoardServiceImpl implements BoardService {
         if (null != board.getLabel())
             boardResponse.setLabel(board.getLabel());
 
-        return boardResponse;
+        return this.boardRepository.save(boardResponse);
     }
 
     @Override
