@@ -23,4 +23,6 @@ public interface CardService {
     Card addTagToCard(Long cardId, Long tagId);
 
     Card removeTagToCard(Long cardId, Long tagId);
+
+    Card changeSectionToCard(Long cardId, Long sectionId);
 }

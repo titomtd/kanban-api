@@ -102,4 +102,11 @@ public class CardController {
         CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
         return new ResponseEntity<>(cardResponse, HttpStatus.OK);
     }
+
+    @PatchMapping("/card/{id}/section")
+    public ResponseEntity<CardDTO> changeSectionToCardById(@PathVariable(value = "id") Long cardId, @RequestBody String sectionId) {
+        Card card = this.cardService.changeSectionToCard(cardId, Long.parseLong(sectionId));
+        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
+        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
+    }
 }

@@ -1,15 +1,9 @@
 package fr.duchemin.sir.kanban.service;
 
-import fr.duchemin.sir.kanban.entity.Address;
-import fr.duchemin.sir.kanban.entity.Card;
-import fr.duchemin.sir.kanban.entity.Tag;
-import fr.duchemin.sir.kanban.entity.User;
+import fr.duchemin.sir.kanban.entity.*;
 import fr.duchemin.sir.kanban.exception.EntityNotFoundException;
 import fr.duchemin.sir.kanban.exception.InternalServerException;
-import fr.duchemin.sir.kanban.repository.AddressRepository;
-import fr.duchemin.sir.kanban.repository.CardRepository;
-import fr.duchemin.sir.kanban.repository.TagRepository;
-import fr.duchemin.sir.kanban.repository.UserRepository;
+import fr.duchemin.sir.kanban.repository.*;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -24,17 +18,20 @@ public class CardServiceImpl implements CardService {
     private UserRepository userRepository;
     private AddressRepository addressRepository;
     private TagRepository tagRepository;
+    private SectionRepository sectionRepository;
 
     public CardServiceImpl(
             CardRepository cardRepository,
             UserRepository userRepository,
             AddressRepository addressRepository,
-            TagRepository tagRepository
+            TagRepository tagRepository,
+            SectionRepository sectionRepository
     ) {
         this.cardRepository = cardRepository;
         this.userRepository = userRepository;
         this.addressRepository = addressRepository;
         this.tagRepository = tagRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     @Override
@@ -181,6 +178,25 @@ public class CardServiceImpl implements CardService {
         Card card = cardOptional.get();
         Tag tag = tagOptional.get();
         card.removeTag(tag);
+
+        return this.cardRepository.save(card);
+    }
+
+    @Override
+    public Card changeSectionToCard(Long cardId, Long sectionId) {
+        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
+
+        if (cardOptional.isEmpty())
+            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
+
+        Optional<Section> sectionOptional = this.sectionRepository.findById(sectionId);
+
+        if (sectionOptional.isEmpty())
+            throw new EntityNotFoundException("Section with id " + sectionId + " not found.");
+
+        Card card = cardOptional.get();
+        Section section = sectionOptional.get();
+        card.setSection(section);
 
         return this.cardRepository.save(card);
     }
