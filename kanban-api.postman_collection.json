@@ -585,6 +585,37 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Change Section to Card",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "213",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5432/api/card/18/section",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5432",
+							"path": [
+								"api",
+								"card",
+								"18",
+								"section"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
