@@ -20,6 +20,8 @@ public interface CardService {
 
     Card setAddressToCard(Long cardId, Address address);
 
+    Card deleteAddressToCard(Long cardId);
+
     Card addTagToCard(Long cardId, Long tagId);
 
     Card removeTagToCard(Long cardId, Long tagId);

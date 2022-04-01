@@ -134,12 +134,20 @@ public class CardServiceImpl implements CardService {
             throw new EntityNotFoundException("Card with id " + cardId + " not found.");
 
         Card card = cardOptional.get();
-        Address addressActual = card.getAddress();
-
-        if (null != addressActual)
-            this.addressRepository.delete(addressActual);
-
         card.setAddress(address);
+
+        return this.cardRepository.save(card);
+    }
+
+    @Override
+    public Card deleteAddressToCard(Long cardId) {
+        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
+
+        if (cardOptional.isEmpty())
+            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
+
+        Card card = cardOptional.get();
+        card.setAddress(null);
 
         return this.cardRepository.save(card);
     }

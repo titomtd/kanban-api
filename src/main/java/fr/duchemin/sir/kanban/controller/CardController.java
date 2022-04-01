@@ -89,6 +89,13 @@ public class CardController {
         return new ResponseEntity<>(cardResponse, HttpStatus.CREATED);
     }
 
+    @DeleteMapping("/card/{id}/address")
+    public ResponseEntity<CardDTO> deleteAddressToCardById(@PathVariable(value = "id") Long cardId) {
+        Card card = this.cardService.deleteAddressToCard(cardId);
+        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
+        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
+    }
+
     @PatchMapping("/card/{id}/tag")
     public ResponseEntity<CardDTO> addTagToCardById(@PathVariable(value = "id") Long cardId, @RequestBody String tagId) {
         Card card = this.cardService.addTagToCard(cardId, Long.parseLong(tagId));
