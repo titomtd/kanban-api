@@ -455,7 +455,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5432/api/card/2/address",
+							"raw": "http://localhost:5432/api/card/27/address",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -464,7 +464,29 @@
 							"path": [
 								"api",
 								"card",
-								"2",
+								"27",
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Addres to Card",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5432/api/card/27/address",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5432",
+							"path": [
+								"api",
+								"card",
+								"27",
 								"address"
 							]
 						}
@@ -884,7 +906,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:5432/api/user/4/address",
+							"raw": "http://localhost:5432/api/user/9/address",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -893,7 +915,29 @@
 							"path": [
 								"api",
 								"user",
-								"4",
+								"9",
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address to User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5432/api/user/9/address",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5432",
+							"path": [
+								"api",
+								"user",
+								"9",
 								"address"
 							]
 						}
