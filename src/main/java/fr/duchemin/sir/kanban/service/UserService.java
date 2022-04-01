@@ -17,4 +17,6 @@ public interface UserService {
     void deleteUser(Long userId);
 
     User setAddressToUser(Long userId, Address address);
+
+    User deleteAddressToUser(Long userId);
 }

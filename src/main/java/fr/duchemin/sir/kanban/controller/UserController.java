@@ -82,4 +82,11 @@ public class UserController {
         UserDTO userResponse = this.modelMapper.map(user, UserDTO.class);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
+
+    @DeleteMapping("/user/{id}/address")
+    public ResponseEntity<UserDTO> setAddressToUserById(@PathVariable(value = "id") Long userId) {
+        User user = this.userService.deleteAddressToUser(userId);
+        UserDTO userResponse = this.modelMapper.map(user, UserDTO.class);
+        return new ResponseEntity<>(userResponse, HttpStatus.OK);
+    }
 }
