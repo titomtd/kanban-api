@@ -1,8 +1,7 @@
 package fr.duchemin.sir.kanban.controller;
 
 import fr.duchemin.sir.kanban.dto.BoardDTO;
-import fr.duchemin.sir.kanban.dto.BoardInsertDTO;
-import fr.duchemin.sir.kanban.dto.SectionInsertDTO;
+import fr.duchemin.sir.kanban.dto.SectionDTO;
 import fr.duchemin.sir.kanban.entity.Board;
 import fr.duchemin.sir.kanban.entity.Section;
 import fr.duchemin.sir.kanban.message.Response;
@@ -50,8 +49,8 @@ public class BoardController {
     }
 
     @PostMapping("/boards")
-    public ResponseEntity<BoardDTO> createBoard(@RequestBody @Valid BoardInsertDTO boardInsertDTO) {
-        Board boardRequest = this.modelMapper.map(boardInsertDTO, Board.class);
+    public ResponseEntity<BoardDTO> createBoard(@RequestBody @Valid BoardDTO boardDTO) {
+        Board boardRequest = this.modelMapper.map(boardDTO, Board.class);
         Board board = this.boardService.createBoard(boardRequest);
         BoardDTO boardResponse = this.modelMapper.map(board, BoardDTO.class);
         return new ResponseEntity<>(boardResponse, HttpStatus.CREATED);
@@ -68,16 +67,16 @@ public class BoardController {
     }
 
     @PostMapping("/board/{id}")
-    public ResponseEntity<BoardDTO> updateBoardById(@PathVariable(value = "id") Long boardId, @RequestBody @Valid BoardInsertDTO boardInsertDTO) {
-        Board boardRequest = this.modelMapper.map(boardInsertDTO, Board.class);
+    public ResponseEntity<BoardDTO> updateBoardById(@PathVariable(value = "id") Long boardId, @RequestBody @Valid BoardDTO boardDTO) {
+        Board boardRequest = this.modelMapper.map(boardDTO, Board.class);
         Board board = this.boardService.updateBoard(boardId, boardRequest);
         BoardDTO boardResponse = this.modelMapper.map(board, BoardDTO.class);
         return new ResponseEntity<>(boardResponse, HttpStatus.OK);
     }
 
     @PatchMapping("/board/{id}/section")
-    public ResponseEntity<BoardDTO> addSectionToBoardById(@PathVariable(value = "id") Long boardId, @RequestBody @Valid SectionInsertDTO sectionInsertDTO) {
-        Section sectionRequest = this.modelMapper.map(sectionInsertDTO, Section.class);
+    public ResponseEntity<BoardDTO> addSectionToBoardById(@PathVariable(value = "id") Long boardId, @RequestBody @Valid SectionDTO sectionDTO) {
+        Section sectionRequest = this.modelMapper.map(sectionDTO, Section.class);
         Board board = this.boardService.addSectionToBoard(boardId, sectionRequest);
         BoardDTO boardResponse = this.modelMapper.map(board, BoardDTO.class);
         return new ResponseEntity<>(boardResponse, HttpStatus.CREATED);

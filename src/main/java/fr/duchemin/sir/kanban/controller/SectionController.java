@@ -2,7 +2,6 @@ package fr.duchemin.sir.kanban.controller;
 
 import fr.duchemin.sir.kanban.dto.CardInsertDTO;
 import fr.duchemin.sir.kanban.dto.SectionDTO;
-import fr.duchemin.sir.kanban.dto.SectionInsertDTO;
 import fr.duchemin.sir.kanban.entity.Card;
 import fr.duchemin.sir.kanban.entity.Section;
 import fr.duchemin.sir.kanban.message.Response;
@@ -60,8 +59,8 @@ public class SectionController {
     }
 
     @PostMapping("/section/{id}")
-    public ResponseEntity<SectionDTO> updateSectionById(@PathVariable(value = "id") Long sectionId, @RequestBody @Valid SectionInsertDTO sectionInsertDTO) {
-        Section sectionRequest = this.modelMapper.map(sectionInsertDTO, Section.class);
+    public ResponseEntity<SectionDTO> updateSectionById(@PathVariable(value = "id") Long sectionId, @RequestBody @Valid SectionDTO sectionDTO) {
+        Section sectionRequest = this.modelMapper.map(sectionDTO, Section.class);
         Section section = this.sectionService.updateSection(sectionId, sectionRequest);
         SectionDTO sectionResponse = this.modelMapper.map(section, SectionDTO.class);
         return new ResponseEntity<>(sectionResponse, HttpStatus.OK);

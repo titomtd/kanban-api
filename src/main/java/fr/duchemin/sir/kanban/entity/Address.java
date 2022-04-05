@@ -1,7 +1,6 @@
 package fr.duchemin.sir.kanban.entity;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
@@ -13,19 +12,16 @@ public class Address {
     @Column(name = "id")
     private Long id;
 
-    @NotBlank(message = "The street cannot be blank.")
     @Size(message = "The street must not contain more than 30 characters.", max = 30)
-    @Column(name = "street", nullable = false)
+    @Column(name = "street")
     private String street;
 
-    @NotBlank(message = "The zip code cannot be blank.")
     @Size(message = "The zip code must not contain more than 15 characters.", max = 15)
-    @Column(name = "zip_code", nullable = false)
+    @Column(name = "zip_code")
     private String zipCode;
 
-    @NotBlank(message = "The city cannot be blank.")
     @Size(message = "The city must not contain more than 20 characters.", max = 20)
-    @Column(name = "city", nullable = false)
+    @Column(name = "city")
     private String city;
 
     public Long getId() {
