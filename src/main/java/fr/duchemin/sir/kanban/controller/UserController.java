@@ -1,9 +1,6 @@
 package fr.duchemin.sir.kanban.controller;
 
-import fr.duchemin.sir.kanban.dto.AddressDTO;
 import fr.duchemin.sir.kanban.dto.UserDTO;
-import fr.duchemin.sir.kanban.dto.UserInsertDTO;
-import fr.duchemin.sir.kanban.entity.Address;
 import fr.duchemin.sir.kanban.entity.User;
 import fr.duchemin.sir.kanban.message.Response;
 import fr.duchemin.sir.kanban.message.ResponseMessageType;
@@ -50,16 +47,16 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserInsertDTO userInsertDTO) {
-        User userRequest = this.modelMapper.map(userInsertDTO, User.class);
+    public ResponseEntity<UserDTO> createUser(@RequestBody @Valid UserDTO userDTO) {
+        User userRequest = this.modelMapper.map(userDTO, User.class);
         User user = this.userService.createUser(userRequest);
         UserDTO userResponse = this.modelMapper.map(user, UserDTO.class);
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("/user/{id}")
-    public ResponseEntity<UserDTO> updateUserById(@PathVariable(value = "id") Long userId, @RequestBody @Valid UserInsertDTO userInsertDTO) {
-        User userRequest = this.modelMapper.map(userInsertDTO, User.class);
+    public ResponseEntity<UserDTO> updateUserById(@PathVariable(value = "id") Long userId, @RequestBody @Valid UserDTO userDTO) {
+        User userRequest = this.modelMapper.map(userDTO, User.class);
         User user = this.userService.updateUser(userId, userRequest);
         UserDTO userResponse = this.modelMapper.map(user, UserDTO.class);
         return new ResponseEntity<>(userResponse, HttpStatus.OK);
@@ -73,20 +70,5 @@ public class UserController {
         response.addDetail("user", "The user has been removed.");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PatchMapping("/user/{id}/address")
-    public ResponseEntity<UserDTO> setAddressToUserById(@PathVariable(value = "id") Long userId, @RequestBody @Valid AddressDTO addressDTO) {
-        Address address = this.modelMapper.map(addressDTO, Address.class);
-        User user = this.userService.setAddressToUser(userId, address);
-        UserDTO userResponse = this.modelMapper.map(user, UserDTO.class);
-        return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/user/{id}/address")
-    public ResponseEntity<UserDTO> setAddressToUserById(@PathVariable(value = "id") Long userId) {
-        User user = this.userService.deleteAddressToUser(userId);
-        UserDTO userResponse = this.modelMapper.map(user, UserDTO.class);
-        return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 }

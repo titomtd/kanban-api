@@ -1,6 +1,5 @@
 package fr.duchemin.sir.kanban.service;
 
-import fr.duchemin.sir.kanban.entity.Address;
 import fr.duchemin.sir.kanban.entity.User;
 
 import java.util.List;
@@ -15,8 +14,4 @@ public interface UserService {
     User updateUser(Long userId, User user);
 
     void deleteUser(Long userId);
-
-    User setAddressToUser(Long userId, Address address);
-
-    User deleteAddressToUser(Long userId);
 }

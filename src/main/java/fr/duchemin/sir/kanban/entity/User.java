@@ -25,7 +25,7 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @ManyToOne(targetEntity = Address.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToOne(targetEntity = Address.class, cascade = {CascadeType.ALL})
     private Address address;
 
     @OneToMany(mappedBy = "user")

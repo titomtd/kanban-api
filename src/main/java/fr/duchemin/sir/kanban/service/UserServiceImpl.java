@@ -1,10 +1,8 @@
 package fr.duchemin.sir.kanban.service;
 
-import fr.duchemin.sir.kanban.entity.Address;
 import fr.duchemin.sir.kanban.entity.User;
 import fr.duchemin.sir.kanban.exception.EntityNotFoundException;
 import fr.duchemin.sir.kanban.exception.InternalServerException;
-import fr.duchemin.sir.kanban.repository.AddressRepository;
 import fr.duchemin.sir.kanban.repository.UserRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -17,11 +15,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
-    private AddressRepository addressRepository;
 
-    public UserServiceImpl(UserRepository userRepository, AddressRepository addressRepository) {
+    public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.addressRepository = addressRepository;
     }
 
     @Override
@@ -61,6 +57,14 @@ public class UserServiceImpl implements UserService {
         if (null != user.getLastName())
             userResponse.setLastName(user.getLastName());
 
+        if (null == userResponse.getAddress()) {
+            userResponse.setAddress(user.getAddress());
+        } else {
+            userResponse.getAddress().setStreet(user.getAddress().getStreet());
+            userResponse.getAddress().setCity(user.getAddress().getCity());
+            userResponse.getAddress().setZipCode(user.getAddress().getZipCode());
+        }
+
         return this.userRepository.save(userResponse);
     }
 
@@ -74,31 +78,5 @@ public class UserServiceImpl implements UserService {
 
         if (this.userRepository.existsById(userId))
             throw new InternalServerException("Failed : The user hasn't been removed.");
-    }
-
-    @Override
-    public User setAddressToUser(Long userId, Address address) {
-        Optional<User> userOptional = this.userRepository.findById(userId);
-
-        if (userOptional.isEmpty())
-            throw new EntityNotFoundException("User with id " + userId + " not found.");
-
-        User userResponse = userOptional.get();
-        userResponse.setAddress(address);
-
-        return this.userRepository.save(userResponse);
-    }
-
-    @Override
-    public User deleteAddressToUser(Long userId) {
-        Optional<User> userOptional = this.userRepository.findById(userId);
-
-        if (userOptional.isEmpty())
-            throw new EntityNotFoundException("User with id " + userId + " not found.");
-
-        User userResponse = userOptional.get();
-        userResponse.setAddress(null);
-
-        return this.userRepository.save(userResponse);
     }
 }
