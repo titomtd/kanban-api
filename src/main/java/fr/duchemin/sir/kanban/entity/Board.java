@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Entity
@@ -56,7 +57,13 @@ public class Board {
     }
 
     public List<Section> getSections() {
-        return sections;
+        sections.sort(new Comparator<Section>() {
+            @Override
+            public int compare(Section sectionA, Section sectionB) {
+                return sectionA.getPosition() - sectionB.getPosition();
+            }
+        });
+        return this.sections;
     }
 
     public void addSection(Section section) {
