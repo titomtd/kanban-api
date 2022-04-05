@@ -66,7 +66,7 @@ public class SectionServiceImpl implements SectionService {
         if (null != section.getLabel())
             sectionResponse.setLabel(section.getLabel());
 
-        if (0 != section.getPosition())
+        if (-1 < section.getPosition())
             sectionResponse.setPosition(section.getPosition());
 
         return this.sectionRepository.save(sectionResponse);

@@ -1,6 +1,6 @@
 package fr.duchemin.sir.kanban.controller;
 
-import fr.duchemin.sir.kanban.dto.CardInsertDTO;
+import fr.duchemin.sir.kanban.dto.CardDTO;
 import fr.duchemin.sir.kanban.dto.SectionDTO;
 import fr.duchemin.sir.kanban.entity.Card;
 import fr.duchemin.sir.kanban.entity.Section;
@@ -51,10 +51,8 @@ public class SectionController {
     @DeleteMapping("/section/{id}")
     public ResponseEntity<Response> removeSectionById(@PathVariable(value = "id") Long sectionId) {
         this.sectionService.deleteSection(sectionId);
-
         Response response = new Response(HttpStatus.OK, ResponseMessageType.SUCCESS.toString());
         response.addDetail("section", "The section has been removed.");
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -67,8 +65,8 @@ public class SectionController {
     }
 
     @PatchMapping("/section/{id}/card")
-    public ResponseEntity<SectionDTO> addCardToSectionById(@PathVariable(value = "id") Long sectionId, @RequestBody @Valid CardInsertDTO cardInsertDTO) {
-        Card cardRequest = this.modelMapper.map(cardInsertDTO, Card.class);
+    public ResponseEntity<SectionDTO> addCardToSectionById(@PathVariable(value = "id") Long sectionId, @RequestBody @Valid CardDTO cardDTO) {
+        Card cardRequest = this.modelMapper.map(cardDTO, Card.class);
         Section section = this.sectionService.addCardToSection(sectionId, cardRequest);
         SectionDTO sectionResponse = this.modelMapper.map(section, SectionDTO.class);
         return new ResponseEntity<>(sectionResponse, HttpStatus.CREATED);
