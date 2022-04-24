@@ -58,13 +58,9 @@ public class UserServiceImpl implements UserService {
         userResponse.setFirstName(user.getFirstName());
         userResponse.setLastName(user.getLastName());
 
-        if (null == userResponse.getAddress()) {
-            userResponse.setAddress(user.getAddress());
-        } else {
-            userResponse.getAddress().setStreet(user.getAddress().getStreet());
-            userResponse.getAddress().setCity(user.getAddress().getCity());
-            userResponse.getAddress().setZipCode(user.getAddress().getZipCode());
-        }
+        userResponse.getAddress().setStreet(user.getAddress().getStreet());
+        userResponse.getAddress().setCity(user.getAddress().getCity());
+        userResponse.getAddress().setZipCode(user.getAddress().getZipCode());
 
         return this.userRepository.save(userResponse);
     }

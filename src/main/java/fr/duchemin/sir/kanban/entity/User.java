@@ -33,6 +33,7 @@ public class User {
 
     public User() {
         this.cards = new ArrayList<>();
+        this.address = new Address();
     }
 
     public Long getId() {
