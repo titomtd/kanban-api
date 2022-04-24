@@ -1,8 +1,10 @@
 package fr.duchemin.sir.kanban.service;
 
+import fr.duchemin.sir.kanban.entity.Card;
 import fr.duchemin.sir.kanban.entity.User;
 import fr.duchemin.sir.kanban.exception.EntityNotFoundException;
 import fr.duchemin.sir.kanban.exception.InternalServerException;
+import fr.duchemin.sir.kanban.repository.CardRepository;
 import fr.duchemin.sir.kanban.repository.UserRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -14,9 +16,11 @@ import java.util.Optional;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private CardRepository cardRepository;
     private UserRepository userRepository;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(CardRepository cardRepository, UserRepository userRepository) {
+        this.cardRepository = cardRepository;
         this.userRepository = userRepository;
     }
 
@@ -51,11 +55,8 @@ public class UserServiceImpl implements UserService {
 
         User userResponse = userOptional.get();
 
-        if (null != user.getFirstName())
-            userResponse.setFirstName(user.getFirstName());
-
-        if (null != user.getLastName())
-            userResponse.setLastName(user.getLastName());
+        userResponse.setFirstName(user.getFirstName());
+        userResponse.setLastName(user.getLastName());
 
         if (null == userResponse.getAddress()) {
             userResponse.setAddress(user.getAddress());
@@ -70,7 +71,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long userId) {
+        Optional<User> userOptional = this.userRepository.findById(userId);
+
+        if (userOptional.isEmpty())
+            throw new EntityNotFoundException("User with id " + userId + " not found.");
+
+        User userResponse = userOptional.get();
+
         try {
+            for (Card card : userResponse.getCards()) {
+                card.setUser(null);
+                this.cardRepository.save(card);
+            }
             this.userRepository.deleteById(userId);
         } catch (EmptyResultDataAccessException exception) {
             throw new EntityNotFoundException("User with id " + userId + " not found.");
