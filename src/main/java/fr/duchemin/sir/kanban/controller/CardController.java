@@ -1,9 +1,6 @@
 package fr.duchemin.sir.kanban.controller;
 
-import fr.duchemin.sir.kanban.dto.AddressDTO;
 import fr.duchemin.sir.kanban.dto.CardDTO;
-import fr.duchemin.sir.kanban.dto.CardInsertDTO;
-import fr.duchemin.sir.kanban.entity.Address;
 import fr.duchemin.sir.kanban.entity.Card;
 import fr.duchemin.sir.kanban.message.Response;
 import fr.duchemin.sir.kanban.message.ResponseMessageType;
@@ -50,8 +47,8 @@ public class CardController {
     }
 
     @PostMapping("/card/{id}")
-    public ResponseEntity<CardDTO> updateCardById(@PathVariable(value = "id") Long cardId, @RequestBody @Valid CardInsertDTO cardInsertDTO) {
-        Card cardRequest = this.modelMapper.map(cardInsertDTO, Card.class);
+    public ResponseEntity<CardDTO> updateCardById(@PathVariable(value = "id") Long cardId, @RequestBody @Valid CardDTO cardDTO) {
+        Card cardRequest = this.modelMapper.map(cardDTO, Card.class);
         Card card = this.cardService.updateCard(cardId, cardRequest);
         CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
         return new ResponseEntity<>(cardResponse, HttpStatus.OK);
@@ -65,49 +62,6 @@ public class CardController {
         response.addDetail("card", "The card has been removed.");
 
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PatchMapping("/card/{id}/user")
-    public ResponseEntity<CardDTO> setUserToCardById(@PathVariable(value = "id") Long cardId, @RequestBody String userId) {
-        Card card = this.cardService.setUserToCard(cardId, Long.parseLong(userId));
-        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
-        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/card/{id}/user")
-    public ResponseEntity<CardDTO> removeUserToCardById(@PathVariable(value = "id") Long cardId) {
-        Card card = this.cardService.removeUserToCard(cardId);
-        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
-        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
-    }
-
-    @PatchMapping("/card/{id}/address")
-    public ResponseEntity<CardDTO> setAddressToCardById(@PathVariable(value = "id") Long cardId, @RequestBody @Valid AddressDTO addressDTO) {
-        Address address = this.modelMapper.map(addressDTO, Address.class);
-        Card card = this.cardService.setAddressToCard(cardId, address);
-        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
-        return new ResponseEntity<>(cardResponse, HttpStatus.CREATED);
-    }
-
-    @DeleteMapping("/card/{id}/address")
-    public ResponseEntity<CardDTO> deleteAddressToCardById(@PathVariable(value = "id") Long cardId) {
-        Card card = this.cardService.deleteAddressToCard(cardId);
-        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
-        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
-    }
-
-    @PatchMapping("/card/{id}/tag")
-    public ResponseEntity<CardDTO> addTagToCardById(@PathVariable(value = "id") Long cardId, @RequestBody String tagId) {
-        Card card = this.cardService.addTagToCard(cardId, Long.parseLong(tagId));
-        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
-        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
-    }
-
-    @DeleteMapping("/card/{id}/tag")
-    public ResponseEntity<CardDTO> removeTagToCardById(@PathVariable(value = "id") Long cardId, @RequestBody String tagId) {
-        Card card = this.cardService.removeTagToCard(cardId, Long.parseLong(tagId));
-        CardDTO cardResponse = this.modelMapper.map(card, CardDTO.class);
-        return new ResponseEntity<>(cardResponse, HttpStatus.OK);
     }
 
     @PatchMapping("/card/{id}/section")

@@ -3,7 +3,10 @@ package fr.duchemin.sir.kanban.service;
 import fr.duchemin.sir.kanban.entity.*;
 import fr.duchemin.sir.kanban.exception.EntityNotFoundException;
 import fr.duchemin.sir.kanban.exception.InternalServerException;
-import fr.duchemin.sir.kanban.repository.*;
+import fr.duchemin.sir.kanban.repository.CardRepository;
+import fr.duchemin.sir.kanban.repository.SectionRepository;
+import fr.duchemin.sir.kanban.repository.TagRepository;
+import fr.duchemin.sir.kanban.repository.UserRepository;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +19,19 @@ public class CardServiceImpl implements CardService {
 
     private CardRepository cardRepository;
     private UserRepository userRepository;
-    private AddressRepository addressRepository;
-    private TagRepository tagRepository;
     private SectionRepository sectionRepository;
+    private TagRepository tagRepository;
 
     public CardServiceImpl(
             CardRepository cardRepository,
             UserRepository userRepository,
-            AddressRepository addressRepository,
-            TagRepository tagRepository,
-            SectionRepository sectionRepository
+            SectionRepository sectionRepository,
+            TagRepository tagRepository
     ) {
         this.cardRepository = cardRepository;
         this.userRepository = userRepository;
-        this.addressRepository = addressRepository;
-        this.tagRepository = tagRepository;
         this.sectionRepository = sectionRepository;
+        this.tagRepository = tagRepository;
     }
 
     @Override
@@ -64,20 +64,34 @@ public class CardServiceImpl implements CardService {
 
         Card cardResponse = cardOptional.get();
 
-        if (null != card.getLabel())
-            cardResponse.setLabel(card.getLabel());
+        cardResponse.setLabel(card.getLabel());
+        cardResponse.setEndDate(card.getEndDate());
 
-        if (null != card.getEndDate())
-            cardResponse.setEndDate(card.getEndDate());
+        if (null != card.getUser()) {
+            Optional<User> userOptional = this.userRepository.findById(card.getUser().getId());
 
-        if (0 != card.getEstimatedTime())
-            cardResponse.setEstimatedTime(card.getEstimatedTime());
+            if (userOptional.isEmpty())
+                throw new EntityNotFoundException("User with id " + card.getUser().getId() + " not found.");
 
-        if (null != card.getUrl())
-            cardResponse.setUrl(card.getUrl());
+            cardResponse.setUser(userOptional.get());
+        } else {
+            cardResponse.setUser(null);
+        }
 
-        if (null != card.getNote())
-            cardResponse.setNote(card.getNote());
+        cardResponse.setEstimatedTime(card.getEstimatedTime());
+        cardResponse.setUrl(card.getUrl());
+        cardResponse.setNote(card.getNote());
+
+        cardResponse.getAddress().setStreet(card.getAddress().getStreet());
+        cardResponse.getAddress().setCity(card.getAddress().getCity());
+        cardResponse.getAddress().setZipCode(card.getAddress().getZipCode());
+
+        cardResponse.removeAllTags();
+
+        for (Tag tag : card.getTags()) {
+            Optional<Tag> tagOptional = this.tagRepository.findById(tag.getId());
+            tagOptional.ifPresent(cardResponse::addTag);
+        }
 
         return this.cardRepository.save(cardResponse);
     }
@@ -92,102 +106,6 @@ public class CardServiceImpl implements CardService {
 
         if (this.cardRepository.existsById(cardId))
             throw new InternalServerException("Failed : The card hasn't been removed.");
-    }
-
-    @Override
-    public Card setUserToCard(Long cardId, Long userId) {
-        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
-
-        if (cardOptional.isEmpty())
-            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
-
-        Optional<User> userOptional = this.userRepository.findById(userId);
-
-        if (userOptional.isEmpty())
-            throw new EntityNotFoundException("User with id " + userId + " not found.");
-
-        Card card = cardOptional.get();
-        User user = userOptional.get();
-        card.setUser(user);
-
-        return this.cardRepository.save(card);
-    }
-
-    @Override
-    public Card removeUserToCard(Long cardId) {
-        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
-
-        if (cardOptional.isEmpty())
-            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
-
-        Card card = cardOptional.get();
-        card.setUser(null);
-
-        return this.cardRepository.save(card);
-    }
-
-    @Override
-    public Card setAddressToCard(Long cardId, Address address) {
-        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
-
-        if (cardOptional.isEmpty())
-            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
-
-        Card card = cardOptional.get();
-        card.setAddress(address);
-
-        return this.cardRepository.save(card);
-    }
-
-    @Override
-    public Card deleteAddressToCard(Long cardId) {
-        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
-
-        if (cardOptional.isEmpty())
-            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
-
-        Card card = cardOptional.get();
-        card.setAddress(null);
-
-        return this.cardRepository.save(card);
-    }
-
-    @Override
-    public Card addTagToCard(Long cardId, Long tagId) {
-        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
-
-        if (cardOptional.isEmpty())
-            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
-
-        Optional<Tag> tagOptional = this.tagRepository.findById(tagId);
-
-        if (tagOptional.isEmpty())
-            throw new EntityNotFoundException("Tag with id " + tagId + " not found.");
-
-        Card card = cardOptional.get();
-        Tag tag = tagOptional.get();
-        card.addTag(tag);
-
-        return this.cardRepository.save(card);
-    }
-
-    @Override
-    public Card removeTagToCard(Long cardId, Long tagId) {
-        Optional<Card> cardOptional = this.cardRepository.findById(cardId);
-
-        if (cardOptional.isEmpty())
-            throw new EntityNotFoundException("Card with id " + cardId + " not found.");
-
-        Optional<Tag> tagOptional = this.tagRepository.findById(tagId);
-
-        if (tagOptional.isEmpty())
-            throw new EntityNotFoundException("Tag with id " + tagId + " not found.");
-
-        Card card = cardOptional.get();
-        Tag tag = tagOptional.get();
-        card.removeTag(tag);
-
-        return this.cardRepository.save(card);
     }
 
     @Override

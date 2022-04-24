@@ -31,7 +31,7 @@ public class Card {
     @Column(name = "estimated_time")
     private int estimatedTime;
 
-    @ManyToOne(targetEntity = Address.class, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @ManyToOne(targetEntity = Address.class, cascade = {CascadeType.ALL})
     private Address address;
 
     @Column(name = "url")
@@ -43,11 +43,12 @@ public class Card {
     @ManyToOne(targetEntity = Section.class, optional = false)
     private Section section;
 
-    @ManyToMany(targetEntity = Tag.class, mappedBy = "cards")
+    @ManyToMany(targetEntity = Tag.class, mappedBy = "cards", cascade = {CascadeType.PERSIST})
     private List<Tag> tags;
 
     public Card() {
         this.tags = new ArrayList<>();
+        this.address = new Address();
     }
 
     public Long getId() {
@@ -126,6 +127,10 @@ public class Card {
         return tags;
     }
 
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
     public void addTag(Tag tag) {
         if (!this.tags.contains(tag)) {
             tag.addCard(this);
@@ -137,6 +142,13 @@ public class Card {
         if (this.tags.contains(tag)) {
             tag.removeCard(this);
             this.tags.remove(tag);
+        }
+    }
+
+    public void removeAllTags() {
+        List<Tag> toRemove = new ArrayList<>(this.tags);
+        for (Tag tag : toRemove) {
+            this.removeTag(tag);
         }
     }
 }
